@@ -1,28 +1,34 @@
 # interactive-state
 
-Vanilla TS/JS state management for sharing data across decoupled parts of the code + routing. Routing is essentially shared state management, too, with the shared data being the URL.
+This library's core vanilla TS/JS exports:
+- State management: [State](#state) · [PersistentState](#persistentstate)
+- Routing: [Route](#route) [ [SPA navigation](#spa-navigation) · [Navigation options](#navigation-options) · [URL matching](#url-matching) · [Type-safe routes](#type-safe-routes) · [SPA links](#spa-links) · [Routing middleware](#navigation-events-and-middleware) ]
 
-This package exposes the following classes:
+`State` is a thin data container allowing for subscription to data updates. It plays a central role in general-purpose shared state management, allowing application components to share data without coupling tightly to each other.
+
+`Route` is a variety of `State`, with its data being the URL. Its purpose is interaction with the URL in a SPA fashion, without full-page reloads, via a `window.location`-like API.
+
+The library's exports include a couple of intermediary objects and maintain the following relations:
 
 ```
-EventEmitter ──► State ──► PersistentState
-                    │
-                    └────► URLState ──► Route
+EventEmitter
+  └─► State
+        ├─► PersistentState
+        └─► URLState
+              └─► Route
 ```
 
-Their purpose boils down to the following:
-
-- `EventEmitter` triggers actions without tightly coupling the interacting components
+- `EventEmitter` triggers actions without tight coupling the interacting components
 - `State` is `EventEmitter` that stores data and emits an event when the data gets updated allowing for dynamic data sharing without tight coupling
 - `PersistentState` is `State` that syncs its data to the browser storage and restores it on page reload
 - `URLState` is `State` that stores the URL and updates it in a SPA fashion
 - `Route` is `URLState` with a `window.location`-like SPA navigation API and a URL matching API
 
-Contents: [State](#state) · [PersistentState](#persistentstate) · [Route](#route) · [Annotated examples](#annotated-examples) · [Integrations](#integrations)
+\+ [Annotated live demos](#annotated-live-demos) · [Integrations](#integrations)
 
-## `State`
+## State
 
-`State` is a thin container for dynamic data. It enables data sharing across multiple parts of code without making these parts directly dependent on each other.
+`State` is a thin data container allowing for subscription to data updates. It enables data sharing across multiple parts of code without making these parts directly dependent on each other.
 
 ```js
 import { State } from "interactive-state";
@@ -37,14 +43,17 @@ counterState.on("set", ({ current }) => {
   document.querySelector("output").textContent = String(current);
 });
 ```
+&#x2BC8; [Live demo: Shared state](https://codesandbox.io/p/sandbox/lqt3z2?file=%252Fsrc%252Findex.ts)
 
 In this example, a button changes a counter value and an `<output>` element shows the updating value. Both elements are decoupled from each other: they are only aware of the shared counter state, but not of each other.
 
 A `"set"` event callback is called each time the state value changes and immediately when the callback is added. Subscribe to the `"update"` event to have the callback respond only to the subsequent state changes without the immediate invocation.
 
-## `PersistentState`
+&#x2BC8; [Live demo: Shared form input state](https://codesandbox.io/p/sandbox/4q7f99?file=%252Fsrc%252Findex.ts)
 
-`PersistentState` is a variety of `State` that syncs its data to the browser storage and restores it on page reload. The way it's used is almost identical to `State`.
+## PersistentState
+
+`PersistentState` is a variety of `State` that syncs its data to a browser storage, like `localStorage` or `sessionStorage`, and restores it on page reload. The way it's used is almost identical to `State`.
 
 ```diff
 - import { State } from "interactive-state";
@@ -62,11 +71,11 @@ A `"set"` event callback is called each time the state value changes and immedia
   });
 ```
 
-By default, `PersistentState` stores its data at the specified `key` in `localStorage` and transforms the data with `JSON.stringify()` and `JSON.parse()`. Switch to `sessionStorage` by setting `options.session` to `true` in `new PersistentState(value, options)`. Set custom `serialize()` and `deserialize()` in `options` to override the default data transforms used with the browser storage. Alternatively, use custom `{ read(), write()? }` as `options` to set up custom interaction with an external storage.
+By default, `PersistentState` stores its data at the specified `key` in `localStorage` and transforms the data with `JSON.stringify()` and `JSON.parse()`. Switch to `sessionStorage` by setting `options.session` to `true` in `new PersistentState(value, options)`. Set custom `serialize()` and `deserialize()` in `options` to override the default data transforms. Alternatively, use custom `{ read(), write()? }` as `options` to set up custom interaction with an external storage.
 
 Instances of `PersistentState` automatically sync their values with the browser storage when created and updated. At other times, call `.emit("sync")` on a `PersistentState` instance to sync its value from the browser storage when needed.
 
-## `Route`
+## Route
 
 `Route` stores the URL and exposes a `window.location`-like API for SPA navigation with a URL matching API.
 
@@ -76,6 +85,8 @@ import { Route } from "interactive-state";
 const route = new Route();
 ```
 
+### SPA navigation
+
 Navigate to other URLs in a SPA fashion similarly to the browser APIs:
 
 ```js
@@ -84,11 +95,24 @@ route.assign("/intro");
 route.replace("/intro");
 ```
 
-Or in a more fine-grained manner:
+Or in a more fine-grained fashion:
 
 ```js
 route.navigate({ href: "/intro", history: "replace", scroll: "off" });
 ```
+
+### Navigation options
+
+The navigation options object accepted by `route.navigate(options)` includes:
+- `href`, a target URL;
+- `referrer`, an original URL prior to the navigation;
+- `history: "push" | "replace"`, controlling whether to save the navigation to the browser history session or not (default: `"push"`, save);
+- `target`, accepting the HTML link `target` attribute values;
+- `scroll: "auto" | "off"`, controlling whether the content should be automatically scrolled to the top after the navigation, similarly to the ordinary link navigation (`"auto"`, default), or not (`"off"`);
+- `spa: "auto" | "off"`, controlling whether the navigation is in the SPA mode (`"auto"`, default) or requires a full-page reload (`"off"`);
+- `id`, an optional ID that can be used in navigation handlers to identify a specific navigation.
+
+### URL matching
 
 Check the current URL value like a regular `string` with `route.href`:
 
@@ -105,7 +129,7 @@ route.at("/intro"); // `true` at "/intro", `false` otherwise
 route.at(/^\/sections\//); // `true` at "/sections/*"
 ```
 
-Or with the extended form `route.at(url, x, y?)`, which is similar to the ternary conditional operator `atURL ? x : y`:
+Or with the extended form `route.at(url, x, y?)`, which acts similarly to the ternary conditional operator `atURL ? x : y`:
 
 ```js
 document.querySelector("header").className = route.at("/", "full", "compact");
@@ -122,27 +146,51 @@ document.querySelector("h1").textContent = route.at(
 // at "/sections/:id", "Section <id>" (otherwise `undefined`)
 ```
 
-Or, alternatively, with a string URL pattern:
+&#x2BC8; [Live demo: URL-based rendering](https://codesandbox.io/p/sandbox/kt6m5l?file=%252Fsrc%252Findex.ts)
+
+### Type-safe routes
+
+Use `zod`, or another [Standard Schema compliant library](https://standardschema.dev/schema#what-schema-libraries-implement-the-spec), with a URL builder like `url-shape` to set up a typed URL schema:
 
 ```js
-import { url } from "url-shape";
+import { createURLBuilder } from "url-shape";
+import { z } from "zod"; // Or another Standard Schema compliant library
+
+const url = createURLBuilder({
+  "/sections/:id": z.object({
+    // URL path placeholder parameters
+    params: z.object({ id: z.coerce.number() }),
+    // An optional URL `query` schema can be defined here, too
+  }),
+  "/": z.object({}), // No parameters, empty schema
+});
+```
+
+Use the typed schema-based URLs and URL patterns to enable type-safe routing:
+
+```js
+// With the URL builder `url()` as defined above
+route.href === url("/intro").href;
 
 document.querySelector("h1").textContent = route.at(
   url("/sections/:id"),
   ({ params }) => `Section ${params.id}`,
+  // ^ { id: number }
 );
 // at "/sections/:id", "Section <id>" (otherwise `undefined`)
 ```
 
-Use a URL builder like the one from `url-shape` also in conjunction with a URL schema to set up type-safe routes ([example](https://codesandbox.io/p/sandbox/qg7qg3?file=%2Fsrc%2Findex.ts)).
+&#x2BC8; [Live demo: Type-safe routing](https://codesandbox.io/p/sandbox/qg7qg3?file=%2Fsrc%2Findex.ts)
 
-Enable SPA navigation with HTML links inside the specified container (or the entire `document`) without any changes to the HTML:
+### SPA links
+
+Enable SPA navigation with regular HTML links inside a specified container (or the entire `document`) without any changes to the HTML:
 
 ```js
 route.observe(document);
 ```
 
-Tweak the links' navigation behavior by adding a relevant combination of the optional `data-` attributes (corresponding to the `route.navigate()` options):
+Tweak the links' navigation behavior by adding a relevant combination of `href`, `target`, and `data-` attributes corresponding to the [navigation options](#navigation-options) outlined above:
 
 ```html
 <a href="/intro">Intro</a>
@@ -153,6 +201,10 @@ Tweak the links' navigation behavior by adding a relevant combination of the opt
 
 Links covered by `route.observe(container, selector?)` also automatically receive the `data-active="true"` attribute whenever their `href` attribute matches the current URL, which can be used for additional styling. If links are added to the DOM asynchronously, call `route.emit("ready")` when the rendering is complete to mark active links.
 
+&#x2BC8; [Live demo: URL-based rendering, SPA links](https://codesandbox.io/p/sandbox/kt6m5l?file=%252Fsrc%252Findex.ts)
+
+### Navigation events and middleware
+
 Define what should be done when the URL changes:
 
 ```js
@@ -161,7 +213,7 @@ route.on("navigationcomplete", ({ href }) => {
 });
 ```
 
-Define what should be done before the URL changes (in a way effectively similar to routing middleware):
+Define what should be done before the URL changes:
 
 ```js
 route.on("navigationstart", ({ href }) => {
@@ -174,14 +226,23 @@ route.on("navigationstart", ({ href }) => {
 });
 ```
 
-## Annotated examples
+The object received by the event handlers as a parameter has the shape of the [navigation options](#navigation-options) outlined above.
 
+Effectively, the navigation event handlers act like routing middleware.
+
+&#x2BC8; [Live demo: Routing middleware](https://codesandbox.io/p/sandbox/rpl3gh?file=%252Fsrc%252Findex.ts)
+
+## Annotated live demos
+
+State management:
 - [Shared state](https://codesandbox.io/p/sandbox/lqt3z2?file=%252Fsrc%252Findex.ts)
 - [Shared form input state](https://codesandbox.io/p/sandbox/4q7f99?file=%252Fsrc%252Findex.ts)
 - [Persistent shared state](https://codesandbox.io/p/sandbox/c9gt3r?file=%252Fsrc%252Findex.ts)
-- [URL-based rendering](https://codesandbox.io/p/sandbox/kt6m5l?file=%252Fsrc%252Findex.ts)
+
+Routing:
+- [URL-based rendering, SPA links](https://codesandbox.io/p/sandbox/kt6m5l?file=%252Fsrc%252Findex.ts)
 - [Type-safe URL-based rendering](https://codesandbox.io/p/sandbox/qg7qg3?file=%2Fsrc%2Findex.ts)
-- [SPA redirection](https://codesandbox.io/p/sandbox/rpl3gh?file=%252Fsrc%252Findex.ts)
+- [Routing middleware](https://codesandbox.io/p/sandbox/rpl3gh?file=%252Fsrc%252Findex.ts)
 
 Find also the code of these examples in the repo's [`tests`](https://github.com/axtk/interactive-state/tree/main/tests) directory.
 

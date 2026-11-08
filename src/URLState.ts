@@ -132,7 +132,7 @@ export class URLState<
   _complete(options?: NavigationOptions): boolean | void | undefined {
     if (typeof window === "undefined" || !options) return;
 
-    let { href, target, scroll } = options;
+    let { href, target, scroll, source } = options;
 
     if (
       scroll === "off" ||
@@ -150,7 +150,7 @@ export class URLState<
           : document.querySelector(`${hash}, a[name="${hash.slice(1)}"]`);
 
       if (targetElement) targetElement.scrollIntoView();
-      else window.scrollTo(0, 0);
+      else if (source !== "popstate") window.scrollTo(0, 0);
     });
   }
   toValue(x: string) {

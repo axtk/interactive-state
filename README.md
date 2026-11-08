@@ -174,7 +174,12 @@ Use the typed schema-based URLs and URL patterns to enable type-safe routing:
 
 ```js
 // With the URL builder `url()` as defined above
-route.href === url("/intro").href;
+route.href = url("/intro").href;
+// Navigates to "/intro"
+
+route.href = url("/sections/:id").compile({ params: { id: 10 } });
+//                                          ^ { id: number }
+// Navigates to "/sections/10"
 
 document.querySelector("h1").textContent = route.at(
   url("/sections/:id"),

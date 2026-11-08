@@ -52,6 +52,8 @@ A `"set"` event callback is called each time the state value changes and immedia
 
 &#x2BC8; [Live demo: Shared form input state](https://codesandbox.io/p/sandbox/4q7f99?file=%252Fsrc%252Findex.ts)
 
+With TypeScript, the value type of a `State` instance is inferred from its initial value, or it can be explicitly specified with a generic type as `new State<T>(value)`.
+
 ## PersistentState
 
 `PersistentState` is a variety of `State` that syncs its data to a browser storage, like `localStorage` or `sessionStorage`, and restores it on page reload. The way it's used is almost identical to `State`.

@@ -19,8 +19,8 @@ EventEmitter
               └─► Route
 ```
 
-- `EventEmitter` triggers actions without tight coupling the interacting components
-- `State` is `EventEmitter` that stores data and emits an event when the data gets updated allowing for dynamic data sharing without tight coupling
+- `EventEmitter` triggers actions without tightly coupling interacting components
+- `State` is `EventEmitter` that stores data and emits an event whenever the data gets updated allowing for dynamic data sharing without tight coupling
 - `PersistentState` is `State` that syncs its data to the browser storage and restores it on page reload
 - `URLState` is `State` that stores the URL and updates it in a SPA fashion
 - `Route` is `URLState` with a `window.location`-like SPA navigation API and a URL matching API

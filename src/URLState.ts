@@ -130,12 +130,12 @@ export class URLState<
     );
   }
   _complete(options?: NavigationOptions): boolean | void | undefined {
-    if (typeof window === "undefined" || !options || options.scroll === "off")
+    if (typeof window === "undefined" || !options)
       return;
 
-    let { href, target } = options;
+    let { href, target, scroll } = options;
 
-    if (href === undefined || (target && target !== "_self")) return;
+    if (scroll === "off" || href === undefined || (target && target !== "_self")) return;
 
     let { hash } = new QuasiURL(href);
 

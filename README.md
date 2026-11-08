@@ -160,7 +160,7 @@ Use `zod`, or another [Standard Schema compliant library](https://standardschema
 import { createURLBuilder } from "url-shape";
 import { z } from "zod"; // Or another Standard Schema compliant library
 
-const url = createURLBuilder({
+export const url = createURLBuilder({
   "/sections/:id": z.object({
     // URL path placeholder parameters
     params: z.object({ id: z.coerce.number() }),

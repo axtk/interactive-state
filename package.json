@@ -1,6 +1,6 @@
 {
   "name": "interactive-state",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Vanilla TS/JS shared state management and routing",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

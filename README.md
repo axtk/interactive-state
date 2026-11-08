@@ -121,8 +121,8 @@ The navigation options object accepted by `route.navigate(options)` includes:
 - `history: "push" | "replace"`, controlling whether to save the navigation to the browser history session or not (default: `"push"`, save);
 - `target`, accepting the HTML link `target` attribute values;
 - `scroll: "auto" | "off"`, controlling the content scrolling behavior after the navigation:
-  - `"auto"` (default), similar to the ordinary link navigation: if the `href` URL has a fragment part (the part after `#`) and the element whose `id` attribute matches the `href` fragment (or a link with a matching `name` attribute) is present, scroll to that element; otherwise, scroll to the top;
-  - `"off"`: don't scroll after navigation;
+  - `"auto"` (default), similar to the ordinary link navigation: if the `href` URL has a fragment part (the part after `#`) and the element whose `id` attribute matches the `href` fragment (or a link with a matching `name` attribute) is present, the content should be automatically scrolled to that element; otherwise, the content is scrolled to the top;
+  - `"off"`: no automatic scrolling after navigation;
 - `spa: "auto" | "off"`, controlling whether the navigation is in the SPA mode:
   - `"auto"` (default): the SPA mode is enabled; if `target` is not empty or `"_self"`, or `href` is not a same-origin URL, it's still a regular URL navigation with a full-page reload;
   - `"off"`: the SPA mode is off, the navigation requires a full-page reload (similarly to the ordinary link navigation);

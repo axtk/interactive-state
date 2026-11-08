@@ -252,4 +252,4 @@ Find also the code of these examples in the repo's [`tests`](https://github.com/
 
 ## Integrations
 
-[`react-interactive-state`](https://www.npmjs.com/package/react-interactive-state)
+[`interactive-react-state`](https://www.npmjs.com/package/interactive-react-state)

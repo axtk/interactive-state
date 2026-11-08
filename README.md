@@ -36,8 +36,12 @@ import { State } from "interactive-state";
 
 const counterState = new State(42);
 
-document.querySelector("button").addEventListener("click", () => {
+document.querySelector("button.plus").addEventListener("click", () => {
   counterState.setValue((value) => value + 1);
+});
+
+document.querySelector("button.reset").addEventListener("click", () => {
+  counterState.setValue(0);
 });
 
 counterState.on("set", ({ current }) => {
@@ -65,8 +69,12 @@ With TypeScript, the value type of a `State` instance is inferred from its initi
 - const counterState = new State(42);
 + const counterState = new PersistentState(42, { key: "counter" });
 
-  document.querySelector("button").addEventListener("click", () => {
+  document.querySelector("button.plus").addEventListener("click", () => {
     counterState.setValue((value) => value + 1);
+  });
+
+  document.querySelector("button.reset").addEventListener("click", () => {
+    counterState.setValue(0);
   });
 
   counterState.on("set", ({ current }) => {

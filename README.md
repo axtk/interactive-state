@@ -1,6 +1,7 @@
 # interactive-state
 
 This library's core vanilla TS/JS exports:
+
 - State management: [State](#state) · [PersistentState](#persistentstate)
 - Routing: [Route](#route) [ [SPA navigation](#spa-navigation) · [Navigation options](#navigation-options) · [URL matching](#url-matching) · [Type-safe routes](#type-safe-routes) · [SPA links](#spa-links) · [Routing middleware](#navigation-events-and-middleware) ]
 
@@ -104,6 +105,7 @@ route.navigate({ href: "/intro", history: "replace", scroll: "off" });
 ### Navigation options
 
 The navigation options object accepted by `route.navigate(options)` includes:
+
 - `href`, a target URL;
 - `referrer`, an original URL prior to the navigation;
 - `history: "push" | "replace"`, controlling whether to save the navigation to the browser history session or not (default: `"push"`, save);
@@ -235,11 +237,13 @@ Effectively, the navigation event handlers act like routing middleware.
 ## Annotated live demos
 
 State management:
+
 - [Shared state](https://codesandbox.io/p/sandbox/lqt3z2?file=%252Fsrc%252Findex.ts)
 - [Shared form input state](https://codesandbox.io/p/sandbox/4q7f99?file=%252Fsrc%252Findex.ts)
 - [Persistent shared state](https://codesandbox.io/p/sandbox/c9gt3r?file=%252Fsrc%252Findex.ts)
 
 Routing:
+
 - [URL-based rendering, SPA links](https://codesandbox.io/p/sandbox/kt6m5l?file=%252Fsrc%252Findex.ts)
 - [Type-safe URL-based rendering](https://codesandbox.io/p/sandbox/qg7qg3?file=%2Fsrc%2Findex.ts)
 - [Routing middleware](https://codesandbox.io/p/sandbox/rpl3gh?file=%252Fsrc%252Findex.ts)

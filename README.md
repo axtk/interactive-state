@@ -5,7 +5,7 @@ This library's core vanilla TS/JS exports:
 - State management: [State](#state) · [PersistentState](#persistentstate)
 - Routing: [Route](#route) [ [SPA navigation](#spa-navigation) · [Navigation options](#navigation-options) · [URL matching](#url-matching) · [Type-safe routes](#type-safe-routes) · [SPA links](#spa-links) · [Routing middleware](#navigation-events-and-middleware) ]
 
-`State` is a thin data container allowing for subscription to data updates. It plays a central role in general-purpose shared state management, allowing application components to share data without coupling tightly to each other.
+`State` is a thin data container that allows for data changes and subscriptions to data updates. It plays a central role in general-purpose shared state management, allowing application components to share data without coupling tightly to each other.
 
 `Route` is a variety of `State`, with its data being the URL. Its purpose is interaction with the URL in a SPA fashion, without full-page reloads, via a `window.location`-like API.
 
@@ -29,7 +29,7 @@ EventEmitter
 
 ## State
 
-`State` is a thin data container allowing for subscription to data updates. It enables data sharing across multiple parts of code without making these parts directly dependent on each other.
+`State` is a thin data container that allows for data changes and subscriptions to data updates. It enables data sharing across multiple parts of code without making these parts directly dependent on each other.
 
 ```js
 import { State } from "interactive-state";

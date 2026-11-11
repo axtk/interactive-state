@@ -6,7 +6,7 @@ import "./index.css";
 // `deserialize` options to define the state value transforms (default:
 // `JSON.stringify()` and `JSON.parse()`.
 const counterState = new PersistentState(42, {
-  key: "interactive-state-dev-counter",
+  key: "stategear-dev-counter",
 });
 // Beyond the initialization, instances of PersistentState act pretty much
 // the same way as instances of State.

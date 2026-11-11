@@ -1,4 +1,4 @@
-# interactive-state
+# stategear
 
 This library's core vanilla TS/JS exports:
 
@@ -32,7 +32,7 @@ EventEmitter
 `State` is a thin data container that allows for data changes and subscriptions to data updates. It enables data sharing across multiple parts of code without making these parts directly dependent on each other.
 
 ```js
-import { State } from "interactive-state";
+import { State } from "stategear";
 
 const counterState = new State(42);
 
@@ -63,8 +63,8 @@ With TypeScript, the value type of a `State` instance is inferred from its initi
 `PersistentState` is a variety of `State` that syncs its data to a browser storage, like `localStorage` or `sessionStorage`, and restores it on page reload. The way it's used is almost identical to `State`.
 
 ```diff
-- import { State } from "interactive-state";
-+ import { PersistentState } from "interactive-state";
+- import { State } from "stategear";
++ import { PersistentState } from "stategear";
 
 - const counterState = new State(42);
 + const counterState = new PersistentState(42, { key: "counter" });
@@ -91,7 +91,7 @@ Instances of `PersistentState` automatically sync their values with the browser 
 `Route` stores the URL and exposes a `window.location`-like API for SPA navigation with a URL matching API.
 
 ```js
-import { Route } from "interactive-state";
+import { Route } from "stategear";
 
 const route = new Route();
 ```
@@ -268,8 +268,8 @@ Routing:
 - [Type-safe URL-based rendering](https://codesandbox.io/p/sandbox/qg7qg3?file=%2Fsrc%2Findex.ts)
 - [Routing middleware](https://codesandbox.io/p/sandbox/rpl3gh?file=%252Fsrc%252Findex.ts)
 
-Find also the code of these examples in the repo's [`tests`](https://github.com/axtk/interactive-state/tree/main/tests) directory.
+Find also the code of these examples in the repo's [`tests`](https://github.com/axtk/stategear/tree/main/tests) directory.
 
 ## Integrations
 
-[`interactive-react-state`](https://www.npmjs.com/package/interactive-react-state)
+[`react-stategear`](https://www.npmjs.com/package/react-stategear)
